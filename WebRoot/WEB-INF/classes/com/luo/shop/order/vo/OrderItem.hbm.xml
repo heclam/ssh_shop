@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="com.luo.shop.order.vo.OrderItem" table="orderitem">
+    	<id name="itemid">
+    		<generator class="native"></generator>
+    	</id>
+    	<property name="count"></property>
+    	<property name="subtotal"></property>
+    	<!-- 关系：与订单的关系 -->
+    	<many-to-one name="order" column="oid" class="com.luo.shop.order.vo.Order" ></many-to-one>
+   		<!-- 关系：与商品的关系 -->
+   		<many-to-one name="product" lazy="false" column="pid" class="com.luo.shop.product.vo.Product"></many-to-one>
+    </class>
+	    
+</hibernate-mapping>

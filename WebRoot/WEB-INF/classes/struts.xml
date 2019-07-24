@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.5//EN"
+	"http://struts.apache.org/dtds/struts-2.5.dtd">
+
+<struts>
+
+    <constant name="struts.devMode" value="true" />
+
+    <package name="default" extends="struts-default" namespace="/">
+    	<!-- 配置拦截器 -->
+    	<interceptors>
+    		<interceptor name="privateIntercepter" class="com.luo.shop.intercepter.PrivateIntercepter"></interceptor>
+    	</interceptors>
+    	<!-- 配置全局的result -->
+    	<global-results>
+    		<result name="msg">/WEB-INF/jsp/msg.jsp</result>
+    		<result name="login">/WEB-INF/jsp/index.jsp</result>
+    		<result name="loginFail">/admin/index.jsp</result>
+    	</global-results>
+		<action name="index" class="indexAction">
+			<!--/WEB-INF里面的文件不能直接访问要通过action访问  -->
+			<result name="index">/WEB-INF/jsp/index.jsp</result>
+		</action>
+		<action name="index_head" class="indexAction" method="head">
+			<result name="head" type="redirectAction">index</result>
+		</action>
+		<!-- 用户模块的action -->
+		<action name="user_*" class="userAction" method="{1}">
+			<result name="input">/WEB-INF/jsp/index.jsp</result>
+			<result name="loginSuccess" type="redirectAction">index</result>
+			<result name="quit" type="redirectAction">index</result>
+			<result name="falirRegist">/WEB-INF/jsp/index.jsp</result>
+			<!-- struts2 2.5的版本需要通配符则需要配置一下代码 -->
+			<allowed-methods>findByName,regist,active,login,quit</allowed-methods>
+		</action>
+		<!-- 验证码action -->
+		<action name="checkImg" class="checkImgCode"></action>
+		<!-- 商品模块action -->
+		<action name="product_*" class="productAction" method="{1}">
+			<result name="findByPid">/WEB-INF/jsp/productDetail.jsp</result>
+			<result name="findByCid">/WEB-INF/jsp/productList.jsp</result>
+			<result name="findByCsid">/WEB-INF/jsp/productList.jsp</result>
+			<allowed-methods>findByPid,findByCid,findByCsid</allowed-methods>
+		</action>
+		<!-- 购物车模块action -->
+		<action name="cart_*" class="cartAction" method="{1}">
+			<result name="addCart">/WEB-INF/jsp/cart.jsp</result>
+			<result name="clearCart">/WEB-INF/jsp/cart.jsp</result>
+			<result name="removeCart">/WEB-INF/jsp/cart.jsp</result>
+			<result name="myCart">/WEB-INF/jsp/cart.jsp</result>
+			<allowed-methods>addCart,clearCart,removeCart,myCart</allowed-methods>
+		</action>
+		<!-- 订单的action -->
+		<action name="order_*" class="orderAction" method="{1}">
+			<result name="saveSuccess">/WEB-INF/jsp/order.jsp</result>
+			<result name="findByUidSuccess">/WEB-INF/jsp/orderList.jsp</result>
+			<result name="findByOidSuccess">/WEB-INF/jsp/order.jsp</result>
+			<result name="updateStateSuccess" type="redirectAction">order_findByUid.action?currentPage=1</result>
+			<allowed-methods>save,findByUid,findByOid,payOrder,callBack,updateState</allowed-methods>
+		</action>
+		<!-- 后台管理用户登录的action -->
+		<action name="adminUser_*" class="adminUserAction" method="{1}">
+			<result name="loginFail">/admin/index.jsp</result>
+			<result name="loginSuccess">/admin/home.jsp</result>
+			<result name="quit">/admin/index.jsp</result>
+			<allowed-methods>login,quit</allowed-methods>
+		</action>
+		<!-- 后台一级分类的action-->
+		<action name="adminCategory_*" class="adminCategoryAction" method="{1}">
+			<result name="findAll">/admin/category/list.jsp</result>
+			<!-- 这里重定向到一级分类的列表 -->
+			<result name="saveSuccess" type="redirectAction">adminCategory_findAll.action</result>
+			<result name="deleteSuccess" type="redirectAction">adminCategory_findAll.action</result>
+			<!-- 一级分类修改 -->
+			<result name="editSuccess">/admin/category/edit.jsp</result>
+			<result name="updateSuccess" type="redirectAction">adminCategory_findAll.action</result>
+			<!-- 应用拦截器 -->
+			<interceptor-ref name="privateIntercepter"></interceptor-ref>
+			<interceptor-ref name="defaultStack"></interceptor-ref>
+			<allowed-methods>findAll,save,delete,edit,update</allowed-methods>
+		</action>
+		<!-- 后台二级分类的action -->
+		<action name="adminCategorySecond_*" class="categorySecondAction" method="{1}">
+			<result name="findAll">/admin/categorySecond/list.jsp</result>
+			<result name="addSuccess">/admin/categorySecond/add.jsp</result>
+			<result name="saveSuccess" type="redirectAction">adminCategorySecond_findAll.action?currentPage=1</result>
+			<result name="deleteSuccess" type="redirectAction">adminCategorySecond_findAll.action?currentPage=1</result>
+			<result name="editSuccess">/admin/categorySecond/edit.jsp</result>
+			<result name="updateSuccess" type="redirectAction">adminCategorySecond_findAll.action?currentPage=1</result>
+			<!-- 应用拦截器 -->
+			<interceptor-ref name="privateIntercepter"></interceptor-ref>
+			<interceptor-ref name="defaultStack"></interceptor-ref>
+			<allowed-methods>findAll,add,save,delete,edit,update</allowed-methods>
+		</action>
+		<!-- 后台商品的管理 -->
+		<action name="adminProduct_*" class="adminProductAction" method="{1}">
+			<result name="findAll">/admin/product/list.jsp</result>
+			<result name="addPageSuccess">/admin/product/add.jsp</result>
+			<result name="addSuccess" type="redirectAction">adminProduct_findAll.action?currentPage=1</result>
+			<result name="deleteSuccess" type="redirectAction">adminProduct_findAll.action?currentPage=1</result>
+			<result name="editSuccess">/admin/product/edit.jsp</result>
+			<result name="updateSuccess" type="redirectAction">adminProduct_findAll.action?currentPage=1</result>
+			<!-- 应用拦截器 -->
+			<interceptor-ref name="privateIntercepter"></interceptor-ref>
+			<interceptor-ref name="defaultStack"></interceptor-ref>
+			<allowed-methods>findAll,addPage,add,delete,edit,update</allowed-methods>
+		</action>
+		<!-- 后台订单的管理 -->
+		<action name="adminOrder_*" class="adminOrderAction" method="{1}">
+			<result name="findAllSuccess">/admin/order/list.jsp</result>
+			<result name="findOrderItemSuccess">/admin/order/orderdetail.jsp</result>
+			<result name="updateSuccess" type="redirectAction">adminOrder_findAll.action?currentPage=1</result>
+			<!-- 应用拦截器 -->
+			<interceptor-ref name="privateIntercepter"></interceptor-ref>
+			<interceptor-ref name="defaultStack"></interceptor-ref>
+			<allowed-methods>findAll,findOrderItem,updateState</allowed-methods>
+		</action>
+    </package>
+
+
+</struts>
