@@ -12,14 +12,14 @@ import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.ModelDriven;
 
 public class UserAction extends ActionSupport implements ModelDriven<User>{
-	//Ä£ĞÍÇı¶¯
+	//æ¨¡å‹é©±åŠ¨
 	private User user = new User();
-	//×¢ÈëUserService
+	//æ³¨å…¥UserService
 	private UserService userService;
 	public void setUserService(UserService userService) {
 		this.userService = userService;
 	}
-	//½ÓÊÜÊäÈëµÄÑéÖ¤Âë
+	//æ¥å—è¾“å…¥çš„éªŒè¯ç 
 	private String checkcode;
 	public void setCheckcode(String checkcode) {
 		this.checkcode = checkcode;
@@ -30,83 +30,83 @@ public class UserAction extends ActionSupport implements ModelDriven<User>{
 		return user;
 	}
 	/**
-	 * AJAX½øĞĞÒì²½Ğ£ÑéÓÃ»§ÃûµÄÖ´ĞĞ·½·¨
-	 * @throws IOException 
+	 * AJAXè¿›è¡Œå¼‚æ­¥æ ¡éªŒç”¨æˆ·åçš„æ‰§è¡Œæ–¹æ³•
+	 * @throws IOException
 	 */
 	public String findByName() throws IOException{
 		User existUser = userService.findByUserName(user.getUsername());
-		//»ñµÃresponse¶ÔÏó£¬Ò³ÃæÊä³ö
+		//è·å¾—responseå¯¹è±¡ï¼Œé¡µé¢è¾“å‡º
 		HttpServletResponse response = ServletActionContext.getResponse();
-		//ÉèÖÃ±àÂë
+		//è®¾ç½®ç¼–ç 
 		response.setContentType("text/html;charset=UTF-8");
 		if(existUser != null){
-			//²éÑ¯µ½ÓÃ»§£ºÓÃ»§ÃûÒÑ´æÔÚ
-			response.getWriter().println("<font color='red'>ÓÃ»§ÃûÒÑ´æÔÚ</font>");
+			//æŸ¥è¯¢åˆ°ç”¨æˆ·ï¼šç”¨æˆ·åå·²å­˜åœ¨
+			response.getWriter().println("<font color='red'>ç”¨æˆ·åå·²å­˜åœ¨</font>");
 		}else{
-			response.getWriter().println("<font color='red'>ÓÃ»§Ãû¿ÉÒÔÊ¹ÓÃ</font>");
+			response.getWriter().println("<font color='red'>ç”¨æˆ·åå¯ä»¥ä½¿ç”¨</font>");
 		}
 		return NONE;
 	}
 	/*
-	 * ÓÃ»§×¢²á
+	 * ç”¨æˆ·æ³¨å†Œ
 	 */
 	public String regist(){
 		/*
-		 * ÕâÀï½øĞĞÑéÖ¤µÄÅĞ¶Ï
+		 * è¿™é‡Œè¿›è¡ŒéªŒè¯çš„åˆ¤æ–­
 		 */
 		String crcode = (String) ServletActionContext.getRequest().getSession().getAttribute("checkImgCode");
-		
+
 		if(!crcode.equalsIgnoreCase(checkcode)){
-			this.addActionError("ÑéÖ¤Âë´íÎó£¡");
+			this.addActionError("éªŒè¯ç é”™è¯¯ï¼");
 			return "falirRegist";
 		}
 		userService.save(user);
-		this.addActionMessage("×¢²á³É¹¦£¬ÇëÈ¥ÓÊÏä¼¤»î£¡");
+		this.addActionMessage("æ³¨å†ŒæˆåŠŸï¼Œè¯·å»é‚®ç®±æ¿€æ´»ï¼");
 		return "msg";
-		
+
 	}
 	/*
-	 * ÓÃ»§¼¤»î
-	 * ¸ù¾İ´«»ØÀ´µÄ¼¤»îÂëcodeÊÇ·ñÓëÉú³ÉµÄÒ»ÑùÈçÏàÍ¬ÔòĞŞ¸ÄstatusÎª1 codeÎª¿Õ
-	 * Èô²»Ò»ÑùÔò·µ»Ø´íÎóĞÅÏ¢
-	 * 
+	 * ç”¨æˆ·æ¿€æ´»
+	 * æ ¹æ®ä¼ å›æ¥çš„æ¿€æ´»ç codeæ˜¯å¦ä¸ç”Ÿæˆçš„ä¸€æ ·å¦‚ç›¸åŒåˆ™ä¿®æ”¹statusä¸º1 codeä¸ºç©º
+	 * è‹¥ä¸ä¸€æ ·åˆ™è¿”å›é”™è¯¯ä¿¡æ¯
+	 *
 	 */
 	public String active(){
 		User existUser = userService.findUserBYCode(user.getCode());
 		if(existUser == null){
-			this.addActionMessage("ÓÃ»§¼¤»îÊ§°Ü£¬¼¤»îÂë´íÎó£¡");
+			this.addActionMessage("ç”¨æˆ·æ¿€æ´»å¤±è´¥ï¼Œæ¿€æ´»ç é”™è¯¯ï¼");
 		}else{
 			existUser.setState(1);
 			existUser.setCode(null);
 			userService.updateUser(existUser);
-			this.addActionMessage("ÓÃ»§¼¤»î³É¹¦£¬ÇëÈ¥µÇÂ¼£¡");
+			this.addActionMessage("ç”¨æˆ·æ¿€æ´»æˆåŠŸï¼Œè¯·å»ç™»å½•ï¼");
 			return "msg";
 		}
 		return NONE;
 	}
-	
+
 	/*
-	 * ÓÃ»§µÇÂ¼
+	 * ç”¨æˆ·ç™»å½•
 	 */
 	public String login(){
 		User existsUser = userService.login(user);
 		if(existsUser == null){
-			//µÇÂ¼Ê§°Ü£»²¢ÎŞ´ËÓÃ»§
-			this.addActionError("ÓÃ»§Ãû´íÎó»òÃÜÂë´íÎó»òÓÃ»§Î´¼¤»î");
+			//ç™»å½•å¤±è´¥ï¼›å¹¶æ— æ­¤ç”¨æˆ·
+			this.addActionError("ç”¨æˆ·åé”™è¯¯æˆ–å¯†ç é”™è¯¯æˆ–ç”¨æˆ·æœªæ¿€æ´»");
 			return LOGIN;
 		}else{
-			//µÇÂ¼³É¹¦
+			//ç™»å½•æˆåŠŸ
 			ServletActionContext.getRequest().getSession().setAttribute("existsUser", existsUser);
 			return "loginSuccess";
 		}
-		
+
 	}
-	
+
 	/*
-	 * ÓÃ»§ÍË³ö
+	 * ç”¨æˆ·é€€å‡º
 	 */
 	public String quit(){
-		//½«sessionÏú»Ù
+		//å°†sessioné”€æ¯
 		ServletActionContext.getRequest().getSession().invalidate();
 		return "quit";
 	}
